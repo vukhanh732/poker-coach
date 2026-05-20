@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-
 import { getHandLogs } from "@/app/actions/hand-logs";
 import { HandCard } from "@/components/features/hands/HandCard";
 import { PnlChart } from "@/components/features/hands/PnlChart";
+import { ExampleHandState } from "@/components/features/hands/ExampleHand";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCents } from "@/lib/utils";
@@ -135,15 +135,7 @@ export default async function HandsPage({
 
       {/* Hand list */}
       {hands.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center space-y-3">
-          <p className="text-muted-foreground">No hands logged yet.</p>
-          <Button asChild size="sm">
-            <Link href="/hands/new">
-              <Plus className="h-4 w-4 mr-1.5" />
-              Log your first hand
-            </Link>
-          </Button>
-        </div>
+        <ExampleHandState />
       ) : (
         <div className="space-y-3">
           {hands.map((hand) => (
