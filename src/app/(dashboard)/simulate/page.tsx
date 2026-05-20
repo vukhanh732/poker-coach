@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DecisionClock } from "@/components/simulate/DecisionClock";
+import { SolverPanel } from "@/components/simulate/SolverPanel";
 import { useDecisionClockSettings } from "@/hooks/useDecisionClockSettings";
 import type { SimulationAnalysis } from "@/app/actions/simulation";
 import type { VillainType } from "@/lib/poker/villain";
@@ -78,6 +79,14 @@ export default function SimulatePage() {
       </Card>
 
       {state.equity !== 0.5 && <EquityBadge equity={state.equity} />}
+
+      <SolverPanel
+        heroCards={state.heroCards.map(cardToString)}
+        board={state.board.map(cardToString)}
+        pot={state.pot}
+        effectiveStack={state.heroStack}
+        solveKey={`${state.phase}-${state.board.length}`}
+      />
 
       {state.lastVillainAction && (
         <p className="text-center text-sm text-muted-foreground">
