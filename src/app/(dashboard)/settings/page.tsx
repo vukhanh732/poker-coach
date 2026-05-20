@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getProfile, upsertProfile } from "@/app/actions/profile";
 import { createClient } from "@/lib/supabase/client";
 import { useDecisionClockSettings } from "@/hooks/useDecisionClockSettings";
+import { useHighContrast } from "@/hooks/useHighContrast";
 
 const STAKE_LEVELS = [
   { value: "1_2", label: "$1/$2" },
@@ -40,6 +41,7 @@ export default function SettingsPage() {
   const [location, setLocation] = useState("");
   const [studyGoals, setStudyGoals] = useState("");
   const { settings: clockSettings, update: updateClock } = useDecisionClockSettings();
+  const { enabled: highContrast, toggle: toggleHighContrast } = useHighContrast();
 
   useEffect(() => {
     async function load() {
@@ -183,6 +185,37 @@ export default function SettingsPage() {
               </Button>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Display section */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base">Display</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">High Contrast</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Boost text contrast for casino lighting
+              </p>
+            </div>
+            <button
+              onClick={toggleHighContrast}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                highContrast ? "bg-primary" : "bg-muted"
+              }`}
+              role="switch"
+              aria-checked={highContrast}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  highContrast ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
         </CardContent>
       </Card>
 

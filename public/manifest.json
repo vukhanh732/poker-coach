@@ -1,0 +1,42 @@
+{
+  "name": "Poker Coach",
+  "short_name": "PokerCoach",
+  "description": "Study poker the right way. Preflop ranges, pot odds, hand history, and AI-powered analysis for live cash players.",
+  "start_url": "/trainer",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d2818",
+  "theme_color": "#0d2818",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Trainer",
+      "url": "/trainer",
+      "description": "Practice preflop ranges"
+    },
+    {
+      "name": "Log Hand",
+      "url": "/hands/new",
+      "description": "Log a new hand"
+    },
+    {
+      "name": "Simulate",
+      "url": "/simulate",
+      "description": "Play vs AI villain"
+    }
+  ]
+}

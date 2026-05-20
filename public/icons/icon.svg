@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: felt-900 -->
+  <rect width="512" height="512" rx="80" fill="#0d2818"/>
+  <!-- Card suit: spade in ink-50 -->
+  <path d="M256 96 C220 140 144 172 144 220 C144 252 164 268 192 262 C180 278 166 290 144 296 L368 296 C346 290 332 278 320 262 C348 268 368 252 368 220 C368 172 292 140 256 96 Z"
+        fill="#f5f1e8"/>
+  <!-- Rank A in gold-400 -->
+  <text x="256" y="420" text-anchor="middle" font-family="Space Mono, monospace" font-size="120" font-weight="700" fill="#f5c518">A</text>
+</svg>

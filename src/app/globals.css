@@ -219,6 +219,20 @@ body::before {
   font-family: var(--font-mono), "Courier New", monospace;
 }
 
+/* ─── High-contrast mode (casino lighting) ────────────────────────── */
+.high-contrast {
+  --foreground: #ffffff;
+  --muted-foreground: #d4d4d4;
+  --card-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.3);
+}
+.high-contrast body {
+  font-weight: 500;
+}
+.high-contrast .text-muted-foreground {
+  color: #c8c8c8 !important;
+}
+
 /* Range grid cell transitions */
 .range-cell {
   transition: transform 0.1s ease, opacity 0.1s ease;
