@@ -23,6 +23,7 @@ export default function TrainerPage() {
   const [position, setPosition] = useState<Position>("BTN");
   const [actionFilter, setActionFilter] = useState<RangeAction | "all">("all");
   const [gameMode, setGameMode] = useState<GameMode>("cash");
+  const [showGTO, setShowGTO] = useState(true);
 
   const stats = getPositionStats(position);
 
@@ -117,9 +118,23 @@ export default function TrainerPage() {
             ))}
           </div>
 
+          {/* GTO toggle */}
+          <div className="flex items-center justify-end gap-2">
+            <span className="text-xs text-muted-foreground">GTO frequencies</span>
+            <button
+              onClick={() => setShowGTO((v) => !v)}
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${showGTO ? "bg-primary" : "bg-muted"}`}
+              role="switch"
+              aria-checked={showGTO}
+            >
+              <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${showGTO ? "translate-x-5" : "translate-x-1"}`} />
+            </button>
+          </div>
+
           <HandGrid
             position={position}
             highlightAction={actionFilter === "all" ? null : actionFilter}
+            showGTO={showGTO}
           />
         </TabsContent>
 
