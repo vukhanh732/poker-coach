@@ -64,8 +64,44 @@
   --color-heart: #ef4444;
   --color-diamond: #ef4444;
 
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-space-mono);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+
+  /* ── Spec-locked design tokens (Section 4) ─────────────────────────── */
+  /* Felt palette */
+  --color-felt-spec-900: #0d2818;
+  --color-felt-spec-800: #1a472a;
+  --color-felt-spec-700: #2d8659;
+  --color-felt-spec-600: #3da66f;
+
+  /* Gold accents */
+  --color-gold-spec-500: #d4a627;
+  --color-gold-spec-400: #f5c518;
+
+  /* Action states */
+  --color-action-fold: #3a1f1f;
+  --color-action-mixed-a: #2d8659;
+  --color-action-mixed-b: #d4a627;
+
+  /* Ink (text) */
+  --color-ink-50: #f5f1e8;
+  --color-ink-300: #a8a496;
+  --color-ink-500: #6b6859;
+
+  /* Surfaces */
+  --color-surface-elevated: #1f3a2a;
+  --color-border-subtle: rgba(245, 241, 232, 0.08);
+  --color-border-strong: rgba(245, 241, 232, 0.16);
+
+  /* Semantic */
+  --color-success: #2d8659;
+  --color-danger: #b84545;
+  --color-warning: #d4a627;
+
+  /* Suit colors */
+  --color-suit-red: #f5c518;
+  --color-suit-black: #f5f1e8;
 }
 
 /* ─── Dark theme (default) ─────────────────────────────────────────── */

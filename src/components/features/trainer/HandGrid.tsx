@@ -14,14 +14,7 @@ import { getHandExplanation } from "@/data/range-explanations";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
-
-const ACTION_COLORS: Record<RangeAction, string> = {
-  raise: "bg-green-700 hover:bg-green-600",
-  call: "bg-yellow-700 hover:bg-yellow-600",
-  fold: "bg-felt-700 hover:bg-felt-600",
-  mixed:
-    "bg-gradient-to-br from-green-700 to-fold-700 hover:from-green-600",
-};
+import { HandCell } from "@/components/trainer/HandCell";
 
 const ACTION_BADGE: Record<RangeAction, "raise" | "call" | "fold" | "outline"> = {
   raise: "raise",
@@ -68,24 +61,16 @@ export function HandGrid({ position, highlightAction }: HandGridProps) {
                 highlightAction != null && action !== highlightAction;
 
               return (
-                <button
+                <HandCell
                   key={`${row}-${col}`}
+                  hand={hand}
+                  action={action}
+                  selected={isSelected}
+                  dimmed={dimmed}
                   onClick={() =>
-                    setSelected(
-                      isSelected ? null : { hand, action, row, col }
-                    )
+                    setSelected(isSelected ? null : { hand, action, row, col })
                   }
-                  className={cn(
-                    "range-cell aspect-square rounded-[2px] text-center font-mono text-white transition-all",
-                    ACTION_COLORS[action],
-                    isSelected && "ring-2 ring-gold-400 ring-offset-1 ring-offset-background scale-110 z-10",
-                    dimmed && "opacity-20"
-                  )}
-                  style={{ fontSize: "clamp(5px, 1.5vw, 10px)" }}
-                  title={hand}
-                >
-                  {hand}
-                </button>
+                />
               );
             })
           )}
@@ -97,13 +82,14 @@ export function HandGrid({ position, highlightAction }: HandGridProps) {
         {(["raise", "call", "mixed", "fold"] as RangeAction[]).map((a) => (
           <span key={a} className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <span
-              className={cn(
-                "h-3 w-3 rounded-sm",
-                a === "raise" && "bg-green-700",
-                a === "call" && "bg-yellow-700",
-                a === "mixed" && "bg-gradient-to-br from-green-700 to-felt-700",
-                a === "fold" && "bg-felt-700"
-              )}
+              className="h-3 w-3 rounded-sm"
+              style={{
+                background:
+                  a === "raise" ? "var(--color-felt-spec-700)" :
+                  a === "call"  ? "var(--color-gold-spec-500)" :
+                  a === "mixed" ? "linear-gradient(135deg, var(--color-action-mixed-a) 50%, var(--color-action-mixed-b) 50%)" :
+                  "var(--color-action-fold)",
+              }}
             />
             {a.charAt(0).toUpperCase() + a.slice(1)}
           </span>

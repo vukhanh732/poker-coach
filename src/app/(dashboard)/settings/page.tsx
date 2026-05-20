@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProfile, upsertProfile } from "@/app/actions/profile";
 import { createClient } from "@/lib/supabase/client";
+import { useDecisionClockSettings } from "@/hooks/useDecisionClockSettings";
 
 const STAKE_LEVELS = [
   { value: "1_2", label: "$1/$2" },
@@ -38,6 +39,7 @@ export default function SettingsPage() {
   const [stakeLevel, setStakeLevel] = useState("1_2");
   const [location, setLocation] = useState("");
   const [studyGoals, setStudyGoals] = useState("");
+  const { settings: clockSettings, update: updateClock } = useDecisionClockSettings();
 
   useEffect(() => {
     async function load() {
@@ -180,6 +182,57 @@ export default function SettingsPage() {
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
             </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Simulation section */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base">Simulation</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Decision Clock</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Countdown timer during each decision in /simulate
+              </p>
+            </div>
+            <button
+              onClick={() => updateClock({ enabled: !clockSettings.enabled })}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                clockSettings.enabled ? "bg-primary" : "bg-muted"
+              }`}
+              role="switch"
+              aria-checked={clockSettings.enabled}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  clockSettings.enabled ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
+          {clockSettings.enabled && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">Duration</p>
+              <div className="flex items-center gap-2">
+                {[10, 15, 20, 30].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => updateClock({ seconds: s })}
+                    className={`rounded px-2 py-0.5 text-sm font-mono transition-colors ${
+                      clockSettings.seconds === s
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {s}s
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>

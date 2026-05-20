@@ -13,6 +13,8 @@ import { cardToString } from "@/lib/poker/deck";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DecisionClock } from "@/components/simulate/DecisionClock";
+import { useDecisionClockSettings } from "@/hooks/useDecisionClockSettings";
 import type { SimulationAnalysis } from "@/app/actions/simulation";
 import type { VillainType } from "@/lib/poker/villain";
 import type { GameType } from "@/hooks/useSimulation";
@@ -21,6 +23,7 @@ export default function SimulatePage() {
   const { state, startGame, heroAct, resetGame } = useSimulation();
   const [analysis, setAnalysis] = useState<SimulationAnalysis | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const { settings: clockSettings } = useDecisionClockSettings();
 
   async function handleShowdown() {
     if (!state) return;
@@ -97,12 +100,24 @@ export default function SimulatePage() {
       </div>
 
       {!isShowdown ? (
-        <ActionPanel
-          onAction={heroAct}
-          currentBet={state.currentBet}
-          pot={state.pot}
-          heroStack={state.heroStack}
-        />
+        <div className="space-y-3">
+          {clockSettings.enabled && (
+            <div className="flex justify-center">
+              <DecisionClock
+                seconds={clockSettings.seconds}
+                onExpire={() => heroAct("fold")}
+                resetKey={state.phase}
+                disabled={false}
+              />
+            </div>
+          )}
+          <ActionPanel
+            onAction={heroAct}
+            currentBet={state.currentBet}
+            pot={state.pot}
+            heroStack={state.heroStack}
+          />
+        </div>
       ) : (
         <div className="flex flex-col gap-3">
           <Card>

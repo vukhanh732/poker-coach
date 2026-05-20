@@ -1,18 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Mono } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans, Space_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-display",
+  display: "swap",
+  axes: ["opsz"],
+  weight: ["500", "600"],
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  variable: "--font-body",
   display: "swap",
 });
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
-  variable: "--font-space-mono",
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -62,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceMono.variable} dark`}
+      className={`${fraunces.variable} ${ibmPlexSans.variable} ${spaceMono.variable} dark`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans antialiased">
