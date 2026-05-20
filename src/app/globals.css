@@ -1,0 +1,193 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Poker design tokens */
+  --color-felt-950: #060f08;
+  --color-felt-900: #0a1f0e;
+  --color-felt-800: #0f2b13;
+  --color-felt-700: #1a3522;
+  --color-felt-600: #234529;
+  --color-felt-500: #2d5534;
+  --color-felt-400: #3d6b44;
+  --color-felt-300: #508058;
+
+  --color-gold-700: #8b6518;
+  --color-gold-600: #b8932a;
+  --color-gold-500: #c9a84c;
+  --color-gold-400: #d4b866;
+  --color-gold-300: #e0cc88;
+  --color-gold-200: #ecdaa8;
+
+  /* Range action colors */
+  --color-range-raise: #16a34a;
+  --color-range-call: #ca8a04;
+  --color-range-fold: #374151;
+  --color-range-mixed: #7c3aed;
+
+  /* Card suits */
+  --color-spade: #e8f5e9;
+  --color-club: #e8f5e9;
+  --color-heart: #ef4444;
+  --color-diamond: #ef4444;
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-mono);
+}
+
+/* ─── Dark theme (default) ─────────────────────────────────────────── */
+:root {
+  --radius: 0.625rem;
+
+  --background: #0a1f0e;
+  --foreground: #e8f5e9;
+
+  --card: #0f2b13;
+  --card-foreground: #e8f5e9;
+
+  --popover: #0f2b13;
+  --popover-foreground: #e8f5e9;
+
+  --primary: #c9a84c;
+  --primary-foreground: #060f08;
+
+  --secondary: #1a3522;
+  --secondary-foreground: #e8f5e9;
+
+  --muted: #1a3522;
+  --muted-foreground: #7aad80;
+
+  --accent: #234529;
+  --accent-foreground: #e8f5e9;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #fef2f2;
+
+  --border: #234529;
+  --input: #1a3522;
+  --ring: #c9a84c;
+
+  --chart-1: #c9a84c;
+  --chart-2: #16a34a;
+  --chart-3: #3b82f6;
+  --chart-4: #ef4444;
+  --chart-5: #a855f7;
+}
+
+/* ─── Light theme ─────────────────────────────────────────────────── */
+.light {
+  --background: #f0fdf4;
+  --foreground: #0a1f0e;
+
+  --card: #ffffff;
+  --card-foreground: #0a1f0e;
+
+  --popover: #ffffff;
+  --popover-foreground: #0a1f0e;
+
+  --primary: #b8932a;
+  --primary-foreground: #fefce8;
+
+  --secondary: #dcfce7;
+  --secondary-foreground: #0a1f0e;
+
+  --muted: #f0fdf4;
+  --muted-foreground: #3d6b44;
+
+  --accent: #dcfce7;
+  --accent-foreground: #0a1f0e;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #fff;
+
+  --border: #bbf7d0;
+  --input: #dcfce7;
+  --ring: #b8932a;
+}
+
+/* ─── Base styles ─────────────────────────────────────────────────── */
+* {
+  border-color: var(--border);
+  outline-color: var(--ring);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Felt texture overlay on body */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='transparent'/%3E%3Crect width='1' height='1' fill='rgba(255,255,255,0.015)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Mono font for numbers and cards */
+.font-mono {
+  font-family: var(--font-mono), "Courier New", monospace;
+}
+
+/* Range grid cell transitions */
+.range-cell {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+.range-cell:hover {
+  transform: scale(1.15);
+  z-index: 10;
+}
