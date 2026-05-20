@@ -24,9 +24,11 @@ import {
   XCircle,
   BookOpen,
   Zap,
+  AlertTriangle,
 } from "lucide-react";
 
 type Category = Question["category"];
+type QuestionWithLeech = Question & { lapses: number; isLeech: boolean };
 
 const CATEGORY_LABELS: Record<Category, string> = {
   preflop: "Preflop",
@@ -55,7 +57,7 @@ interface SessionAnswer {
 // ─── Daily Quiz ───────────────────────────────────────────────────────────────
 
 function DailyQuiz() {
-  const [sessionQuestions, setSessionQuestions] = useState<Question[]>([]);
+  const [sessionQuestions, setSessionQuestions] = useState<QuestionWithLeech[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<SessionAnswer[]>([]);
   const [pendingNext, setPendingNext] = useState(false);
@@ -197,6 +199,14 @@ function DailyQuiz() {
         </div>
         <Progress value={progress} className="h-2" />
       </div>
+
+      {/* Leech warning */}
+      {currentQuestion?.isLeech && (
+        <div className="flex items-center gap-2 rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm text-orange-700">
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          <span>Leech — you&apos;ve missed this {currentQuestion.lapses} times. Review the concept carefully.</span>
+        </div>
+      )}
 
       {/* Question */}
       <AnimatePresence mode="wait">

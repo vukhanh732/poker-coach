@@ -4,9 +4,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/lib/db";
 import { quizAttempts } from "@/lib/db/schema";
-import { eq, and, lte } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { questions, type Question } from "@/data/questions";
-import { sm2, defaultSM2State } from "@/lib/srs";
+import { sm2, defaultSM2State, isLeech } from "@/lib/srs";
 import type { InferSelectModel } from "drizzle-orm";
 import { ensureUser } from "@/lib/ensure-user";
 
@@ -19,10 +19,14 @@ export type QuestionWithSRS = Question & {
     interval: number;
     nextReviewAt: Date | null;
     attemptId: string | null;
+    lapses: number;
+    isLeech: boolean;
   };
 };
 
-export async function getDueQuestions(limit: number = 10): Promise<Question[]> {
+export async function getDueQuestions(
+  limit: number = 10
+): Promise<Array<Question & { lapses: number; isLeech: boolean }>> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -35,39 +39,40 @@ export async function getDueQuestions(limit: number = 10): Promise<Question[]> {
 
   const now = new Date();
 
-  // Fetch all user attempts from DB
   const attempts = await db
     .select()
     .from(quizAttempts)
     .where(eq(quizAttempts.userId, user.id));
 
-  // Build a map: questionId -> attempt
   const attemptMap = new Map<string, QuizAttempt>();
   for (const attempt of attempts) {
     attemptMap.set(attempt.questionId, attempt);
   }
 
-  // Categorize questions
-  const unseenQuestions: Question[] = [];
-  const dueQuestions: Array<{ question: Question; nextReviewAt: Date }> = [];
+  const unseenQuestions: Array<Question & { lapses: number; isLeech: boolean }> = [];
+  const dueQuestions: Array<{
+    question: Question & { lapses: number; isLeech: boolean };
+    nextReviewAt: Date;
+  }> = [];
 
   for (const question of questions) {
     const attempt = attemptMap.get(question.id);
+    const lapses = attempt?.lapses ?? 0;
+    const enriched = { ...question, lapses, isLeech: isLeech(lapses) };
+
     if (!attempt) {
-      unseenQuestions.push(question);
+      unseenQuestions.push(enriched);
     } else {
       const nextReview = attempt.nextReviewAt ? new Date(attempt.nextReviewAt) : now;
       if (nextReview <= now) {
-        dueQuestions.push({ question, nextReviewAt: nextReview });
+        dueQuestions.push({ question: enriched, nextReviewAt: nextReview });
       }
     }
   }
 
-  // Sort due questions by nextReviewAt (oldest first)
   dueQuestions.sort((a, b) => a.nextReviewAt.getTime() - b.nextReviewAt.getTime());
 
-  // Combine: due questions first, then unseen
-  const combined: Question[] = [
+  const combined = [
     ...dueQuestions.map((d) => d.question),
     ...unseenQuestions,
   ];
@@ -90,12 +95,10 @@ export async function submitAnswer(
   const userId = await ensureUser();
   if (!userId) return { success: false, error: "Not authenticated" };
 
-  // Re-fetch auth user for compatibility with existing code below
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "Not authenticated" };
 
-  // Fetch existing attempt for this question
   const [existing] = await db
     .select()
     .from(quizAttempts)
@@ -112,6 +115,7 @@ export async function submitAnswer(
         repetitions: existing.repetitions ?? 0,
         easeFactor: existing.easeFactor ?? 250,
         interval: existing.interval ?? 0,
+        lapses: existing.lapses ?? 0,
       }
     : defaultSM2State();
 
@@ -119,7 +123,8 @@ export async function submitAnswer(
     correct,
     currentState.repetitions,
     currentState.easeFactor,
-    currentState.interval
+    currentState.interval,
+    currentState.lapses
   );
 
   try {
@@ -132,6 +137,7 @@ export async function submitAnswer(
           repetitions: updated.repetitions,
           easeFactor: updated.easeFactor,
           interval: updated.interval,
+          lapses: updated.lapses,
           nextReviewAt: updated.nextReviewAt,
         })
         .where(
@@ -150,6 +156,7 @@ export async function submitAnswer(
         repetitions: updated.repetitions,
         easeFactor: updated.easeFactor,
         interval: updated.interval,
+        lapses: updated.lapses,
         nextReviewAt: updated.nextReviewAt,
       });
     }

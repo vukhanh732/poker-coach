@@ -8,13 +8,12 @@ export const TAGS = [
   "bluff_caught",
   "hero_call",
   "value_bet",
-  "bad_beat",
-  "cooler",
 ] as const;
 
 export const handLogSchema = z.object({
   hand: z.string().min(1, "Hand is required").max(10, "Hand too long"),
   position: z.enum(POSITIONS, { required_error: "Position is required" }),
+  gameType: z.enum(["cash", "tournament"]).default("cash"),
   streets: z.object({
     preflop: z.string().min(1, "Preflop action is required"),
     flop: z.string().optional(),

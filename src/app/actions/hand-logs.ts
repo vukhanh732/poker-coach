@@ -7,6 +7,7 @@ import { handLogs } from "@/lib/db/schema";
 import { handLogSchema, type HandLogFormValues } from "@/lib/validators/hand-log";
 import { dollarsToCents } from "@/lib/utils";
 import { eq, desc, and, sql } from "drizzle-orm";
+import type { GameType } from "@/lib/db/schema";
 import { ensureUser } from "@/lib/ensure-user";
 
 export async function createHandLog(
@@ -24,6 +25,7 @@ export async function createHandLog(
     const {
       hand,
       position,
+      gameType,
       streets,
       tags,
       result,
@@ -40,6 +42,7 @@ export async function createHandLog(
         userId,
         hand,
         position,
+        gameType,
         streets,
         tags: tags ?? [],
         result: result ?? null,
@@ -67,10 +70,12 @@ export async function getHandLogs({
   limit = 20,
   offset = 0,
   tag,
+  gameType,
 }: {
   limit?: number;
   offset?: number;
   tag?: string;
+  gameType?: GameType;
 } = {}) {
   try {
     const supabase = await createClient();
@@ -86,6 +91,10 @@ export async function getHandLogs({
 
     if (tag) {
       conditions.push(sql`${handLogs.tags} @> ARRAY[${tag}]::text[]`);
+    }
+
+    if (gameType) {
+      conditions.push(eq(handLogs.gameType, gameType));
     }
 
     const rows = await db

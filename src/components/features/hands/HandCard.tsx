@@ -20,8 +20,6 @@ const TAG_LABELS: Record<string, string> = {
   bluff_caught: "Bluff Caught",
   hero_call: "Hero Call",
   value_bet: "Value Bet",
-  bad_beat: "Bad Beat",
-  cooler: "Cooler",
 };
 
 interface HandCardProps {

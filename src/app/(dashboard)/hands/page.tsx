@@ -7,9 +7,25 @@ import { PnlChart } from "@/components/features/hands/PnlChart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCents } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import type { GameType } from "@/lib/db/schema";
 
-export default async function HandsPage() {
-  const hands = await getHandLogs({ limit: 50 });
+const GAME_TYPE_LABELS: Record<GameType, string> = {
+  cash: "Cash",
+  tournament: "Tournament",
+};
+
+export default async function HandsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const rawGameType = typeof params.gameType === "string" ? params.gameType : undefined;
+  const gameType: GameType | undefined =
+    rawGameType === "cash" || rawGameType === "tournament" ? rawGameType : undefined;
+
+  const hands = await getHandLogs({ limit: 50, gameType });
 
   const totalPnl = hands.reduce((sum, h) => sum + (h.pnl ?? 0), 0);
   const wins = hands.filter((h) => h.result === "won").length;
@@ -34,6 +50,35 @@ export default async function HandsPage() {
             New Hand
           </Link>
         </Button>
+      </div>
+
+      {/* Game type filter chips */}
+      <div className="flex gap-2">
+        <Link
+          href="/hands"
+          className={cn(
+            "inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors",
+            !gameType
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+          )}
+        >
+          All
+        </Link>
+        {(["cash", "tournament"] as GameType[]).map((gt) => (
+          <Link
+            key={gt}
+            href={`/hands?gameType=${gt}`}
+            className={cn(
+              "inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors",
+              gameType === gt
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+            )}
+          >
+            {GAME_TYPE_LABELS[gt]}
+          </Link>
+        ))}
       </div>
 
       {/* P&L Chart */}

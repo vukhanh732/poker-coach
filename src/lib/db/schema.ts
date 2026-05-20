@@ -1,5 +1,6 @@
 import {
   pgTable,
+  pgEnum,
   uuid,
   text,
   boolean,
@@ -10,6 +11,18 @@ import {
   pgSchema,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+
+export const gameTypeEnum = pgEnum("game_type", ["cash", "tournament"]);
+export type GameType = typeof gameTypeEnum.enumValues[number];
+
+export const handLogTagEnum = pgEnum("hand_log_tag", [
+  "mistake",
+  "tough_spot",
+  "bluff_caught",
+  "hero_call",
+  "value_bet",
+]);
+export type HandLogTag = typeof handLogTagEnum.enumValues[number];
 
 // ─── Users ──────────────────────────────────────────────────────────────────
 // mirrors Supabase auth.users — we store app-level profile data separately
@@ -45,7 +58,8 @@ export const handLogs = pgTable("hand_logs", {
       river?: string;
       board?: string;
     }>(),
-  tags: text("tags").array().notNull().default([]),
+  gameType: gameTypeEnum("game_type").notNull().default("cash"),
+  tags: text("tags").array().$type<HandLogTag[]>().notNull().default([]),
   result: text("result"), // "won" | "lost" | "split" | null
   pnl: integer("pnl"), // in cents, positive = profit
   villainNotes: text("villain_notes"),
@@ -71,6 +85,8 @@ export const quizAttempts = pgTable("quiz_attempts", {
   easeFactor: integer("ease_factor").notNull().default(250), // × 0.01 = 2.5 default
   interval: integer("interval").notNull().default(1), // days until next review
   repetitions: integer("repetitions").notNull().default(0),
+  lapses: integer("lapses").notNull().default(0),
+  gameType: gameTypeEnum("game_type").notNull().default("cash"),
   nextReviewAt: timestamp("next_review_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
